@@ -20,7 +20,7 @@ class Network(object):
         self.height = height
         self.width = width
         self.channels = channels
-        self.classes = labels
+        self.labels = labels
         self.seed = seed
 
     def inference(self, input_layer, is_training):
@@ -63,6 +63,9 @@ class Network(object):
             # Predictions
             predictions = {'classes': tf.argmax(input=logits, axis=1),
                            'probabilities': tf.nn.softmax(logits, name="softmax_tensor")}
+
+            # Check output dimensions
+            assert net.shape[1] == self.labels
 
             return logits, predictions
 
