@@ -4,8 +4,6 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
-import os
-import json
 import tensorflow as tf
 
 # Local imports
@@ -14,13 +12,13 @@ from mnistazure.generator import DataGenerator
 
 class Network(object):
 
-    def __init__(self, height, width, channels, labels, seed=0):
+    def __init__(self, height, width, channels, num_labels, seed=0):
 
         # Set input parameters
         self.height = height
         self.width = width
         self.channels = channels
-        self.labels = labels
+        self.num_labels = num_labels
         self.seed = seed
 
     def inference(self, input_layer, is_training):
@@ -65,7 +63,7 @@ class Network(object):
                            'probabilities': tf.nn.softmax(logits, name="softmax_tensor")}
 
             # Check output dimensions
-            assert net.shape[1] == self.labels
+            assert logits.shape[1] == self.num_labels
 
             return logits, predictions
 

@@ -17,3 +17,6 @@ WORKING_DIR = (
 
 # Projects path
 DATA_PATH = os.path.join(WORKING_DIR, 'data')
+
+# Tensorboard path
+TENSORBOARD_PATH = os.path.join(WORKING_DIR, 'tensorboard')
