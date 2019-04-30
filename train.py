@@ -57,6 +57,8 @@ def main(args):
 
             # Loop through train dataset batches
             for batch in range(steps_per_epoch):
+
+                # Run train operation
                 loss, accuracy, _, _, _, _ = sess.run(
                     fetches=[graph.loss, graph.accuracy, graph.train_op, graph.update_metrics_op,
                              graph.train_summary_metrics_op, graph.global_step],
@@ -64,6 +66,7 @@ def main(args):
                                graph.learning_rate: args.learning_rate, graph.mode_handle: handle_train}
                 )
 
+                # Print performance
                 if batch % 100 == 0:
                     print('Loss: {}, Accuracy: {}'.format(loss, accuracy))
 
