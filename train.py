@@ -27,6 +27,8 @@ def main(args):
     network = Network(height=image_shape[0], width=image_shape[1],
                       channels=image_shape[2], num_labels=num_labels, seed=0)
 
+    DATA_PATH = '/home/sebastiangoodfellow/Documents/Code/mnist-azure/data'
+
     # Initialize graph
     graph = Graph(network=network, save_path=TENSORBOARD_PATH, data_path=DATA_PATH, max_to_keep=args.max_to_keep)
 

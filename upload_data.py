@@ -5,7 +5,7 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
-from azureml.core import Workspace
+from azureml.core import Workspace, Datastore
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 # Local imports
@@ -19,7 +19,7 @@ def main(args):
                    workspace_name=args.workspace_name)
 
     # Get data store
-    ds = ws.get_default_datastore()
+    ds = Datastore.get(ws, datastore_name='workspacefilestore')
 
     # Upload MNIST dataset to data store
     ds.upload(src_dir=DATA_PATH, target_path='mnist', show_progress=True)
