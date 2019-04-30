@@ -68,7 +68,7 @@ class DataGenerator(object):
         image_string = tf.read_file(filename=file_path)
 
         # Decode JPG image
-        image_decoded = tf.image.decode_jpeg(contents=image_string, channels=3)
+        image_decoded = tf.image.decode_jpeg(contents=image_string, channels=1)
 
         # Normalize RGB values between 0 and 1
         image_normalized = tf.image.convert_image_dtype(image=image_decoded, dtype=tf.float32)
@@ -99,19 +99,3 @@ class DataGenerator(object):
                 .batch(batch_size=self.batch_size)
                 .prefetch(buffer_size=self.prefetch_buffer)
             )
-
-    def _import_images(self, file_path, label):
-        """Import and decode image files from file path strings."""
-        # Get image file name as string
-        image_string = tf.read_file(filename=file_path)
-
-        # Decode JPG image
-        image_decoded = tf.image.decode_jpeg(contents=image_string, channels=3)
-
-        # Normalize RGB values between 0 and 1
-        image_normalized = tf.image.convert_image_dtype(image=image_decoded, dtype=tf.float32)
-
-        # Set tensor shape
-        image = tf.reshape(tensor=image_normalized, shape=self.shape)
-
-        return image, label
