@@ -167,3 +167,6 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# VS Cods
+.vscode

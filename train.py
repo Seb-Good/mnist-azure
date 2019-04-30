@@ -16,7 +16,7 @@ from mnistazure.config import DATA_PATH, TENSORBOARD_PATH
 
 
 def main(args):
-    """Build saved model for serving."""
+    """Train MNIST tensorflow model."""
     # Image shape
     image_shape = (28, 28, 1)
 
@@ -73,7 +73,7 @@ def main(args):
 
 
 def get_parser():
-    """Get parser object for script predict.py."""
+    """Get parser object for script train.py."""
     # Initialize parser
     parser = ArgumentParser(description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter)
 
