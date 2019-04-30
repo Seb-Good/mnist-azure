@@ -170,7 +170,5 @@ ENV/
 
 # VS Cods
 .vscode
-aml_config/*
-assets/*
 aml_config
 assets
