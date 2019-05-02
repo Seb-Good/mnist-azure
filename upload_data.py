@@ -16,7 +16,7 @@ def main(args):
     """Upload MNIST dataset to Azure Workspace data store."""
     # Get workspace
     ws = Workspace(subscription_id=args.subscription_id, resource_group=args.resource_group,
-                   workspace_name=args.workspace_name)
+                   workspace_name='mnist-azure')
 
     # Get data store
     ds = Datastore.get(ws, datastore_name='workspacefilestore')
@@ -33,7 +33,6 @@ def get_parser():
     # Setup arguments
     parser.add_argument("--subscription_id", dest="subscription_id", type=str)
     parser.add_argument("--resource_group", dest="resource_group", type=str)
-    parser.add_argument("--workspace_name", dest="workspace_name", type=str)
 
     return parser
 
