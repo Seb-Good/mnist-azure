@@ -5,17 +5,23 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
+import os
 import numpy as np
 import tensorflow as tf
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 # Local imports
+from azureml.core import Run
 from mnistazure.graph import Graph
 from mnistazure.network import Network
 
 
 def train(args):
     """Train MNIST tensorflow model."""
+
+    # Get run context
+    run = Run.get_context()
+
     # Image shape
     image_shape = (28, 28, 1)
 
@@ -33,6 +39,9 @@ def train(args):
 
         # Initialize variables
         sess.run(graph.init_global)
+
+        # Summary writer
+        train_writer = tf.summary.FileWriter(os.path.join(args.log_dir, 'train'), sess.graph)
 
         # Get number of training batches
         num_train_batches = graph.generator_train.num_batches.eval(
@@ -58,7 +67,7 @@ def train(args):
             for batch in range(steps_per_epoch):
 
                 # Run train operation
-                loss, accuracy, _, _, _, _ = sess.run(
+                loss, accuracy, _, _, summaries, global_step = sess.run(
                     fetches=[graph.loss, graph.accuracy, graph.train_op, graph.update_metrics_op,
                              graph.train_summary_metrics_op, graph.global_step],
                     feed_dict={graph.batch_size: args.batch_size, graph.is_training: True,
@@ -66,12 +75,29 @@ def train(args):
                 )
 
                 # Print performance
-                if batch % 100 == 0:
+                if batch % 10 == 0:
                     print('Loss: {}, Accuracy: {}'.format(loss, accuracy))
+                    if run is not None:
+                        run.log('loss', loss)
+                        run.log('accuracy', accuracy)
+
+                # Collect summaries
+                train_writer.add_summary(summary=summaries, global_step=global_step)
 
             # Initialize the train dataset iterator at the end of each epoch
             sess.run(fetches=[graph.generator_train.iterator.initializer],
                      feed_dict={graph.batch_size: args.batch_size})
+
+        # Save checkpoint
+        os.makedirs('./outputs/checkpoints/', exist_ok=True)
+        graph.saver.save(sess=sess, save_path='./outputs/checkpoints/model')
+        print('Checkpoint Saved')
+
+        # Close summary writer
+        train_writer.close()
+
+    # Complete logging
+    run.complete()
 
 
 def get_parser():

@@ -15,8 +15,7 @@ from mnistazure.config import DATA_PATH
 def main(args):
     """Upload MNIST dataset to Azure Workspace data store."""
     # Get workspace
-    ws = Workspace(subscription_id=args.subscription_id, resource_group=args.resource_group,
-                   workspace_name='mnist-azure')
+    ws = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id, resource_group=args.resource_group)
 
     # Get data store
     ds = Datastore.get(ws, datastore_name='workspacefilestore')

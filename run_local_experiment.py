@@ -5,15 +5,19 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
-from azureml.train.dnn import TensorFlow
-from azureml.core import Workspace, Datastore, Experiment, RunConfiguration
+from azureml.tensorboard import Tensorboard
+from azureml.train.estimator import Estimator
+from azureml.core import Workspace, Experiment, RunConfiguration
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
+# Local imports
+from mnistazure.config import DATA_PATH
 
-def train(args):
+
+def run_experiment(args):
     """Train MNIST tensorflow model."""
     # Set input parameters
-    script_params = {'--data_dir': r'C:\Users\sebig\Documents\Code\mnist-azure\data',
+    script_params = {'--data_dir': DATA_PATH,
                      '--log_dir': './logs',
                      '--batch_size': 32,
                      '--learning_rate': 1e-3,
@@ -21,34 +25,27 @@ def train(args):
                      '--max_to_keep': 1,
                      '--seed': 0}
 
-    # create local compute target
+    # Get local run configuration
     run_local = RunConfiguration()
     run_local.environment.python.user_managed_dependencies = True
 
     # Get workspace
-    ws = Workspace(subscription_id=args.subscription_id, resource_group=args.resource_group,
-                   workspace_name='mnist-azure')
-
-    print(ws.name)
-    print(ws.get_details())
-    print(ws.experiments)
-    print('')
-    for ct in ws.compute_targets:
-        print(ct.name, ct.type)
-
-    print(ws.get_default_compute_target(type='GPU'))
-
-    # Get data store
-    ds = Datastore.get(ws, datastore_name='workspacefilestore')
+    ws = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id, resource_group=args.resource_group)
 
     # Define experiment
-    ex = Experiment(workspace=ws, name='Experiment_2')
+    exp = Experiment(workspace=ws, name=args.experiment_name)
 
-    tf_estimator = TensorFlow(source_directory='./', compute_target='local',
-                              entry_script='train.py', script_params=script_params)
+    # Define estimator
+    estimator = Estimator(source_directory='./', compute_target='local', entry_script='train.py',
+                          script_params=script_params, environment_definition=run_local.environment)
 
-    run = ex.submit(tf_estimator)
-    print(run.get_details())
+    # Run experiment
+    run = exp.submit(estimator)
+    run.wait_for_completion(show_output=True)
+
+    # Print tensorboard url
+    tb = Tensorboard(run)
+    tb.start()
 
 
 def get_parser():
@@ -59,6 +56,7 @@ def get_parser():
     # Setup arguments
     parser.add_argument("--subscription_id", dest="subscription_id", type=str)
     parser.add_argument("--resource_group", dest="resource_group", type=str)
+    parser.add_argument("--experiment_name", dest="experiment_name", type=str)
 
     return parser
 
@@ -69,4 +67,4 @@ if __name__ == "__main__":
     arguments = get_parser().parse_args()
 
     # Run main function
-    train(args=arguments)
+    run_experiment(args=arguments)

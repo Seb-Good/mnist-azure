@@ -168,7 +168,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-# VS Cods
+# VS Code
 .vscode
 aml_config
 assets
