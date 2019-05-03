@@ -1,11 +1,9 @@
 """
 train_azureml_local.py
-----------------------
 By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
-from azureml.tensorboard import Tensorboard
 from azureml.train.estimator import Estimator
 from azureml.core import Workspace, Experiment, RunConfiguration
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
@@ -17,7 +15,8 @@ from mnistazure.config import DATA_PATH
 def run_experiment(args):
     """Train MNIST tensorflow model."""
     # Set input parameters
-    script_params = {'--data_dir': DATA_PATH,
+    script_params = {'--dropout_rate': 0.4,
+                     '--data_dir': DATA_PATH,
                      '--log_dir': './logs',
                      '--batch_size': 32,
                      '--learning_rate': 1e-3,
@@ -26,26 +25,23 @@ def run_experiment(args):
                      '--seed': 0}
 
     # Get local run configuration
-    run_local = RunConfiguration()
-    run_local.environment.python.user_managed_dependencies = True
+    run_config = RunConfiguration()
+    run_config.environment.python.user_managed_dependencies = True
 
     # Get workspace
-    ws = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id, resource_group=args.resource_group)
+    workspace = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id,
+                              resource_group=args.resource_group)
 
     # Define experiment
-    exp = Experiment(workspace=ws, name=args.experiment_name)
+    experiment = Experiment(workspace=workspace, name=args.experiment_id)
 
     # Define estimator
     estimator = Estimator(source_directory='./', compute_target='local', entry_script='train.py',
-                          script_params=script_params, environment_definition=run_local.environment)
+                          script_params=script_params, environment_definition=run_config.environment)
 
     # Run experiment
-    run = exp.submit(estimator)
+    run = experiment.submit(estimator)
     run.wait_for_completion(show_output=True)
-
-    # Print tensorboard url
-    tb = Tensorboard(run)
-    tb.start()
 
 
 def get_parser():
@@ -54,14 +50,14 @@ def get_parser():
     parser = ArgumentParser(description=__doc__, formatter_class=ArgumentDefaultsHelpFormatter)
 
     # Setup arguments
-    parser.add_argument("--subscription_id", dest="subscription_id", type=str)
-    parser.add_argument("--resource_group", dest="resource_group", type=str)
-    parser.add_argument("--experiment_name", dest="experiment_name", type=str)
+    parser.add_argument('--experiment_id', dest='experiment_id', type=str)
+    parser.add_argument('--subscription_id', dest='subscription_id', type=str)
+    parser.add_argument('--resource_group', dest='resource_group', type=str)
 
     return parser
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     # Parse arguments
     arguments = get_parser().parse_args()

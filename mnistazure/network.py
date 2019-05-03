@@ -12,9 +12,10 @@ from mnistazure.generator import DataGenerator
 
 class Network(object):
 
-    def __init__(self, height, width, channels, num_labels, seed=0):
+    def __init__(self, dropout_rate, height, width, channels, num_labels, seed=0):
 
         # Set input parameters
+        self.dropout_rate = dropout_rate
         self.height = height
         self.width = width
         self.channels = channels
@@ -53,7 +54,7 @@ class Network(object):
             net = tf.layers.dense(inputs=net, units=1024, activation=tf.nn.relu)
 
             # Dropout layer
-            net = tf.layers.dropout(inputs=net, rate=0.4, training=is_training)
+            net = tf.layers.dropout(inputs=net, rate=self.dropout_rate, training=is_training)
 
             # Logits layer
             logits = tf.layers.dense(inputs=net, units=10)
@@ -70,12 +71,8 @@ class Network(object):
     def create_placeholders(self):
         """Creates place holders for images and labels."""
         # Create placeholders
-        with tf.variable_scope('images') as scope:
-            images = tf.placeholder(dtype=tf.float32, shape=[None, self.height, self.width, self.channels],
-                                    name=scope.name)
-
-        with tf.variable_scope('labels') as scope:
-            labels = tf.placeholder(dtype=tf.float32, shape=[None], name=scope.name)
+        images = tf.placeholder(dtype=tf.float32, shape=[None, self.height, self.width, self.channels], name='images')
+        labels = tf.placeholder(dtype=tf.float32, shape=[None], name='labels')
 
         return images, labels
 
