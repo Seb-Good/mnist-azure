@@ -7,7 +7,7 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 import os
 
 # Root working directory
-WORKING_DIR = (
+WORKING_PATH = (
     os.path.dirname(
         os.path.dirname(
             os.path.realpath(__file__)
@@ -16,7 +16,7 @@ WORKING_DIR = (
 )
 
 # Projects path
-DATA_PATH = os.path.join(WORKING_DIR, 'data')
+DATA_PATH = os.path.join(WORKING_PATH, 'data')
 
 # Tensorboard path
-TENSORBOARD_PATH = os.path.join(WORKING_DIR, 'tensorboard')
+TENSORBOARD_PATH = os.path.join(WORKING_PATH, 'tensorboard')

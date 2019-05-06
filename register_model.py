@@ -11,7 +11,8 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 def register_model(args):
     """Upload MNIST dataset to Azure Workspace data store."""
     # Get workspace
-    workspace = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id, resource_group=args.resource_group)
+    workspace = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id,
+                              resource_group=args.resource_group)
 
     # Get experiment
     experiment = Experiment(workspace=workspace, name=args.experiment_id)
@@ -21,7 +22,8 @@ def register_model(args):
 
     # Register model
     model = run.register_model(model_name='mnist_tf_model', model_path='./outputs')
-    print(model.name, model.id, model.version, sep='\t')
+    print('\nModel Registration Complete:\nModel Name: {}\nModel ID: {}\nModel Version: {}\n'
+          .format(model.name, model.id, model.version))
 
 
 def get_parser():
