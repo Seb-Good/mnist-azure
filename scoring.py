@@ -24,7 +24,7 @@ def init():
     sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
 
     # Import meta graph
-    saver = tf.train.import_meta_graph(os.path.join(model_path, 'outputs', 'graphs',
+    saver = tf.train.import_meta_graph(os.path.join(model_path, 'graphs',
                                                     'inference_graph_{}.meta'.format('array')))
 
     # Get graph
@@ -40,11 +40,11 @@ def init():
     sess.run(tf.global_variables_initializer())
 
     # Restore graph variables from checkpoint
-    saver.restore(sess=sess, save_path=os.path.join(model_path, 'outputs', 'checkpoints', 'model'))
+    saver.restore(sess=sess, save_path=os.path.join(model_path, 'checkpoints', 'model'))
 
 
 def run(raw_data):
     data = np.array(json.loads(raw_data)['data'])
-    out = predictions.eval(sess=sess, feed_dict={'images': data})
+    out = predictions.eval(session=sess, feed_dict={'images': data})
     y_hat = np.argmax(out, axis=1)
     return json.dumps(y_hat.tolist())

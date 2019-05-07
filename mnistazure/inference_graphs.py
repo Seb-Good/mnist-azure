@@ -3,9 +3,6 @@ inference_graph.py
 By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
-# Compatibility imports
-from __future__ import absolute_import, division, print_function
-
 # 3rd party imports
 import os
 import tensorflow as tf
