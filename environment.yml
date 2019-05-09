@@ -9,5 +9,6 @@ dependencies:
   - python=3.6.2
   - tensorflow==1.10.0
   - numpy==1.16.3
+  - pillow==6.0.0
   - pip:
     - azureml-defaults

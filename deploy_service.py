@@ -21,7 +21,7 @@ def deploy_service(args):
     image = Image(workspace=workspace, name=args.image_name, version=args.image_id)
 
     # Get webservice configuration
-    aci_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=1,
+    aci_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=5,
                                                     description='Predict digit value from images '
                                                                 'of handwritten digits')
 

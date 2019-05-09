@@ -6,7 +6,10 @@ By: Sebastian D. Goodfellow, Ph.D., 2019
 # 3rd party imports
 import os
 import json
+import base64
 import numpy as np
+from PIL import Image
+from io import BytesIO
 import tensorflow as tf
 from azureml.core.model import Model
 
@@ -44,7 +47,17 @@ def init():
 
 
 def run(raw_data):
-    data = np.array(json.loads(raw_data)['data'])
-    out = predictions.eval(session=sess, feed_dict={images: data})
-    y_hat = np.argmax(out, axis=1)
-    return json.dumps(y_hat.tolist())
+    """Run model inference."""
+    # Convert raw data to a numpy array
+    # data = np.array(json.loads(raw_data)['data'])
+
+    # Load raw data
+    data = json.loads(raw_data)
+
+    # Get image arrays
+    inputs = np.array([np.array(Image.open(BytesIO(base64.b64decode(row['image']))), dtype=np.uint8) for row in data])
+
+    # Run model inverse with input data
+    output = predictions.eval(session=sess, feed_dict={images: inputs})
+
+    return json.dumps(output.tolist())
