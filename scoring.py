@@ -45,6 +45,6 @@ def init():
 
 def run(raw_data):
     data = np.array(json.loads(raw_data)['data'])
-    out = predictions.eval(session=sess, feed_dict={'images': data})
+    out = predictions.eval(session=sess, feed_dict={images: data})
     y_hat = np.argmax(out, axis=1)
     return json.dumps(y_hat.tolist())
