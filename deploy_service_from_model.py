@@ -1,24 +1,28 @@
 """
-deploy_service.py
+deploy_service_from_image.py
 By: Sebastian D. Goodfellow, Ph.D., 2019
 """
 
 # 3rd party imports
 from azureml.core import Workspace
-from azureml.core.image import Image
-from azureml.core.webservice import Webservice
-from azureml.core.webservice import AciWebservice
+from azureml.core.model import Model
+from azureml.core.image import ContainerImage
+from azureml.core.webservice import Webservice, AciWebservice
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 
 
 def deploy_service(args):
-    """Deploy service from Docker Image."""
+    """Deploy service from model."""
     # Get workspace
     workspace = Workspace.get(name='mnist-azure', subscription_id=args.subscription_id,
                               resource_group=args.resource_group)
 
-    # Get registered image
-    image = Image(workspace=workspace, name=args.image_name, version=args.image_id)
+    # Get registered model
+    model = Model(workspace=workspace, name=args.model_name, version=args.model_id)
+
+    # Configure image
+    image_config = ContainerImage.image_configuration(runtime='python', execution_script='scoring.py',
+                                                      conda_file='service_env.yml')
 
     # Get webservice configuration
     aci_config = AciWebservice.deploy_configuration(cpu_cores=1, memory_gb=5,
@@ -26,8 +30,8 @@ def deploy_service(args):
                                                                 'of handwritten digits')
 
     # Deploy service from Docker Image
-    service = Webservice.deploy_from_image(workspace=workspace, name=args.service_name,
-                                           deployment_config=aci_config, image=image)
+    service = Webservice.deploy_from_model(workspace=workspace, name=args.service_name, deployment_config=aci_config,
+                                           image_config=image_config, models=[model])
     service.wait_for_deployment(show_output=True)
 
 
@@ -38,8 +42,8 @@ def get_parser():
 
     # Setup arguments
     parser.add_argument('--service_name', dest='service_name', type=str)
-    parser.add_argument('--image_name', dest='image_name', type=str)
-    parser.add_argument('--image_id', dest='image_id', type=int)
+    parser.add_argument('--model_name', dest='model_name', type=str)
+    parser.add_argument('--model_id', dest='model_id', type=int)
     parser.add_argument('--subscription_id', dest='subscription_id', type=str)
     parser.add_argument('--resource_group', dest='resource_group', type=str)
 

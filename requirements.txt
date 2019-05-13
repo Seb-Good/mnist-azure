@@ -5,3 +5,4 @@ opencv==3.4.2
 azureml-sdk==1.0.33
 azureml-tensorboard==1.0.33
 pillow==6.0.0
+azureml-widgets==1.0.33

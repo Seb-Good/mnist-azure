@@ -48,14 +48,15 @@ def init():
 
 def run(raw_data):
     """Run model inference."""
-    # Convert raw data to a numpy array
-    # data = np.array(json.loads(raw_data)['data'])
+    # Image shape
+    image_shape = (28, 28, 1)
 
     # Load raw data
     data = json.loads(raw_data)
 
     # Get image arrays
-    inputs = np.array([np.array(Image.open(BytesIO(base64.b64decode(row['image']))), dtype=np.uint8) for row in data])
+    inputs = np.array([np.array(Image.open(BytesIO(base64.b64decode(row['image']))),
+                                dtype=np.uint8).reshape(image_shape) for row in data])
 
     # Run model inverse with input data
     output = predictions.eval(session=sess, feed_dict={images: inputs})

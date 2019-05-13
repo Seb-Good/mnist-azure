@@ -15,7 +15,7 @@ def register_model(args):
                               resource_group=args.resource_group)
 
     # Get experiment
-    experiment = Experiment(workspace=workspace, name=args.experiment_id)
+    experiment = Experiment(workspace=workspace, name=args.experiment_name)
 
     # Get run
     run = Run(experiment=experiment, run_id=args.run_id)
@@ -33,7 +33,7 @@ def get_parser():
 
     # Setup arguments
     parser.add_argument('--run_id', dest='run_id', type=str)
-    parser.add_argument('--experiment_id', dest='experiment_id', type=str)
+    parser.add_argument('--experiment_name', dest='experiment_name', type=str)
     parser.add_argument('--subscription_id', dest='subscription_id', type=str)
     parser.add_argument('--resource_group', dest='resource_group', type=str)
 

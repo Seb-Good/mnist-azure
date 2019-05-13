@@ -18,7 +18,7 @@ def upload_data(args):
                               resource_group=args.resource_group)
 
     # Get data store
-    data_store = Datastore.get(workspace, datastore_name='workspacefilestore')
+    data_store = Datastore.get(workspace=workspace, datastore_name='workspacefilestore')
 
     # Upload MNIST dataset to data store
     data_store.upload(src_dir=DATA_PATH, target_path=None, show_progress=True)
