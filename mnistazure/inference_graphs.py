@@ -16,7 +16,7 @@ class InferenceGraph(object):
         self.network = network
 
     def save(self, input_type):
-        """Save inference graph for input type: string, array."""
+        """Save inference graph for input type (string or array)."""
         # Start session
         tf.reset_default_graph()
         sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
