@@ -6,7 +6,7 @@ setup(
     version='0.0.1',
     description='Productionization of MNIST Tensorflow model using Azure Machine Learning Service',
     url='https://github.com/Seb-Good/mnist-azure.git',
-    author='Sebastian D. Goodfellow, Ph.D.',
+    author='Sebastian D. Goodfellow',
     license='MIT',
     keywords='deep learning',
     package_dir={'': 'mnist-azure'},
