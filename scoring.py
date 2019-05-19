@@ -20,7 +20,7 @@ def init():
     global images, predictions, sess
 
     # Get model path
-    model_path = Model.get_model_path(model_name='mnist_tf_model', version=5)
+    model_path = Model.get_model_path(model_name='mnist_tf_model', version=6)
 
     # Start session
     tf.reset_default_graph()
